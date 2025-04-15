@@ -1,0 +1,270 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultimate Anime Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Comic+Neue:wght@700&family=Sacramento&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: background 0.5s ease;
+      overflow: hidden;
+    }
+    .calculator {
+      width: 320px;
+      padding: 1.5rem;
+      border-radius: 2rem;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      animation: glowPulse 3s infinite alternate;
+      position: relative;
+    }
+    @keyframes glowPulse {
+      from { box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
+      to { box-shadow: 0 0 40px rgba(255, 255, 255, 0.5); }
+    }
+    .glasses-frame {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .glass {
+      width: 40px;
+      height: 60px;
+      border: 4px solid #555;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+    }
+    .left-glass { margin-right: -15px; }
+    .right-glass { margin-left: -15px; }
+    .glasses-display {
+      z-index: 2;
+      width: 100%;
+      border-radius: 25px;
+      font-size: 1.8rem;
+      text-align: right;
+      padding: 0.5rem;
+      border: 3px solid #333;
+      background: #ffffffcc;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+    .buttons button {
+      padding: 1rem;
+      font-size: 1.25rem;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .buttons button::after {
+      content: '';
+      position: absolute;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      transform: scale(0);
+      width: 100px;
+      height: 100px;
+      top: 50%;
+      left: 50%;
+      pointer-events: none;
+      animation: none;
+    }
+    .buttons button:active::after {
+      animation: ripple 0.6s ease-out;
+    }
+    @keyframes ripple {
+      0% { transform: scale(0); opacity: 0.7; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+    .theme-button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .equal { background-color: #a7e0ff; }
+    .clear { background-color: #ff9ca2; color: white; }
+    .cut { background-color: #ffd166; color: #333; }/* THEMES */
+body.sakura {
+  background: linear-gradient(to bottom right, #ffe6f7, #d0f0ff);
+  font-family: 'Sacramento', cursive;
+}
+body.sakura .calculator {
+  background: #fff0f5;
+  border: 3px dashed #ffaad4;
+  color: #ff69b4;
+}
+body.sakura .buttons button:hover {
+  animation: pulse 0.3s ease-in-out;
+  background: #ffc5e1;
+}
+
+body.cyber {
+  background: #0f0f2d;
+  font-family: 'Orbitron', sans-serif;
+  color: #0ff;
+}
+body.cyber .calculator {
+  background: #1a1a3d;
+  border: 3px solid #ff00cc;
+  box-shadow: 0 0 20px #ff00cc;
+}
+body.cyber .glasses-display {
+  background: #111;
+  color: #0ff;
+}
+body.cyber .buttons button:hover {
+  background: #222;
+  box-shadow: 0 0 10px #ff00cc;
+}
+
+body.chibi {
+  background: #fff8dc;
+  font-family: 'Comic Neue', cursive;
+}
+body.chibi .calculator {
+  background: #fff0b3;
+  border: 3px dotted #ffcc00;
+  color: #ff6f00;
+}
+body.chibi .buttons button:hover {
+  transform: scale(1.1);
+  background: #ffe066;
+}
+
+body.neon {
+  background: #111;
+  font-family: 'Orbitron', sans-serif;
+}
+body.neon .calculator {
+  background: linear-gradient(135deg, #ff00cc, #3333ff);
+  color: white;
+}
+body.neon .buttons button:hover {
+  background: linear-gradient(45deg, #33ffff, #ff99cc);
+  color: #000;
+}
+
+body.starry {
+  background: radial-gradient(#000022, #000);
+  font-family: 'Sacramento', cursive;
+  color: white;
+}
+body.starry .calculator {
+  background: #1a1a3d;
+  color: #fff;
+  border: 2px solid #ffffff44;
+  box-shadow: 0 0 10px #ffffff33;
+}
+body.starry .buttons button:hover {
+  background: #333;
+  color: #fff;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fall {
+  to { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+  </style>
+</head>
+<body class="sakura">
+  <div class="calculator">
+    <h2 id="title">Kawaii Calc</h2>
+    <div class="glasses-frame">
+      <div class="glass left-glass"></div>
+      <input type="text" class="glasses-display" id="display" readonly />
+      <div class="glass right-glass"></div>
+    </div>
+    <div class="buttons">
+      <button onclick="press('7')">7</button>
+      <button onclick="press('8')">8</button>
+      <button onclick="press('9')">9</button>
+      <button onclick="press('/')">÷</button>
+      <button onclick="press('4')">4</button>
+      <button onclick="press('5')">5</button>
+      <button onclick="press('6')">6</button>
+      <button onclick="press('*')">×</button>
+      <button onclick="press('1')">1</button>
+      <button onclick="press('2')">2</button>
+      <button onclick="press('3')">3</button>
+      <button onclick="press('-')">−</button>
+      <button onclick="press('0')">0</button>
+      <button onclick="press('.')">.</button>
+      <button class="equal" onclick="calculate()">=</button>
+      <button onclick="press('+')">+</button>
+      <button class="clear" onclick="clearDisplay()">C</button>
+      <button class="cut" onclick="cutLast()">✂️</button>
+    </div>
+    <button class="theme-button" onclick="changeTheme()">Change Theme</button>
+  </div>
+  <script>
+    const display = document.getElementById('display');
+    const body = document.body;
+    const title = document.getElementById('title');let themes = ['sakura', 'cyber', 'chibi', 'neon', 'starry'];
+let titles = ['Kawaii Calc', 'Cyber Idol Calc', 'Chibi Calc', 'Neon Dream Calc', 'Starry Night Calc'];
+let current = 0;
+
+function press(val) {
+  display.value += val;
+}
+function calculate() {
+  try {
+    display.value = eval(display.value);
+  } catch {
+    display.value = 'Error';
+  }
+}
+function clearDisplay() {
+  display.value = '';
+}
+function cutLast() {
+  display.value = display.value.slice(0, -1);
+}
+function changeTheme() {
+  body.classList.remove(themes[current]);
+  current = (current + 1) % themes.length;
+  body.classList.add(themes[current]);
+  title.innerText = titles[current];
+}
+
+// Falling petals
+setInterval(() => {
+  const petal = document.createElement('div');
+  petal.innerText = '❀';
+  petal.style.position = 'fixed';
+  petal.style.top = '-2rem';
+  petal.style.left = Math.random() * 100 + 'vw';
+  petal.style.fontSize = Math.random() * 20 + 10 + 'px';
+  petal.style.opacity = Math.random();
+  petal.style.color = '#ffb6c1';
+  petal.style.zIndex = 0;
+  petal.style.animation = 'fall 5s linear forwards';
+  document.body.appendChild(petal);
+  setTimeout(() => petal.remove(), 5000);
+}, 300);
+
+  </script>
+</body>
+</html>
